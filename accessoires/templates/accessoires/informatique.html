@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Acessoires{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+<ol class="breadcrumb">
+    <li>{% trans 'Accessoires' %}</li>
+    <li class="active">{% trans 'Informatique  ' %}</li>
+
+
+
+</ol>
+<a href="{% url 'add_accessoire' 1 %}" class="btn btn-primary pull-right">
+    <span class="glyphicon glyphicon-plus"></span> {% trans 'Add' %}
+</a>
+<br><br>
+{% if accessoires_inf %}
+<div class="row">
+    <div class="col-md-10 col-sm-offset-1 ">
+        <section >
+
+            <div class="table-responsive">
+                <table id="informatique" class="table table-bordered  table-hover table-condensed " >
+                    <thead>
+                        <tr bgcolor="#ADA5A5">
+                            <th></th>
+                            <th>{% trans 'Ref' %}</th>
+                            <th>{% trans 'Produit' %}</th>
+                            {% if perms.reports %}
+                  <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+
+                            <th>{% trans ' Prix de vendre' %}</th>
+                            <th>{% trans ' En Stock' %}</th>
+                            <th>{% trans 'Description' %}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for access in accessoires_inf %}
+                        <tr>
+
+
+                        {% if access.image %}
+                            <td align="center" > <img src="{{ access.image.url}}" class="client_project_logo" width="80" height="60"></td>
+                            {% else  %}
+                            <td align="center"> <img src="{{ STATIC_URL }}images/access_inf.jpg" class="client_project_logo" width="80" height="60"></td>
+
+
+                            {% endif %}
+
+
+
+
+
+                            <td> {{ access.id }}</td>
+                            <td class="info"><a href="{% url 'accessoire' access.id %}" > {{ access.produit }}</td>
+ {% if perms.reports %}
+                <td class="danger"> {{ access.prix_de_gros }}TD</td>
+                 {% endif %}
+
+
+                            <td class="danger"> {{ access.prix }}TD</td>
+                            <td class="warning"> {{ access.quantite }}</td>
+                            <td> {{ access.description|default:'none' }}</td>
+                            <td>
+                                <a href="{% url 'edite_accessoire' access.pk 1 %}"
+                                class="glyphicon glyphicon-edit"></a><br>
+                                <a href="{% url 'delete_accessoire' access.pk 1 %}"
+                                class="glyphicon glyphicon-remove"></a>
+                            </td>
+                            {% if access.quantite > 0 %}
+                            <td align="center"><a href="{% url 'vendre_accessoire' 1 access.id %}" class="btn btn-primary pull-right">
+                                <span class="glyphicon glyphicon-shopping-cart"></span> {% trans 'vendre' %}
+                            </a></td>
+                            {% else %}
+                            <td class="danger">SoldeOut</td>
+
+
+                            {% endif %}
+
+
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+</div>
+{% else %}
+<h4 class="no-data">{% trans 'There is no published accessoires yet' %}. <a
+    href="{% url 'add_accessoire' 1 %}">{% trans 'Be the first one to Add' %}!</a></h4>
+    {% endif %}
+
+    <script>
+        $(document).ready(function () {
+            $('#informatique').DataTable(
+            {
+                "dom": 'T<"clear">lfrtip',
+                "tableTools": {
+                    "sSwfPath": "/static/swf/copy_csv_xls_pdf.swf",
+                    "aButtons": [
+                    "print",
+
+                    ]
+                }
+            }
+            );
+        });
+    </script>
+
+    {% endblock main %}

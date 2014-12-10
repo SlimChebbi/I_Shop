@@ -1,0 +1,129 @@
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>I_Shop |{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ STATIC_URL }}img/favicon.png">
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/vulnDB.css" rel="stylesheet">
+    <script src="{{ STATIC_URL }}js/jquery-2.1.1.min.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/vulnDB.js"></script>
+
+    {% block head %}
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+    <header>
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="">I_Shop</a>
+                </div>
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'feeds' %}">{% trans 'Feeds' %}</a></li>
+
+
+
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Accessoires' %} <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+
+                            <li><a href="{% url 'informatique' %}" >{% trans 'Informatique' %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'portable' %}">{% trans 'Téléphones Portables' %}</a></li>
+                        </ul>
+                    </li>
+                     <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Téléphones Portables' %} <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+
+                            <li><a href="{% url 'nouveau' %}" >{% trans 'Nouveaux' %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'occasion' %}">{% trans 'Occasion' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Lignes' %} <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+
+                            <li><a href="{% url 'ooredoo' %}" >{% trans 'Ooredoo' %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'orange' %}">{% trans 'Orange' %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'telecom' %}">{% trans 'Telecom' %}</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Reparations' %} <span class="caret"></span></a>
+                          <ul class="dropdown-menu" role="menu">
+
+                            <li><a href="{% url 'encour' %}" >{% trans 'En cours' %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'terminer' %}">{% trans 'Termine' %}</a></li>
+                        </ul>
+                    </li>
+                    {% if perms.reports %}
+                    <li><a href="{% url 'now' %}">{% trans 'Reports' %}</a></li>
+                 {% endif %}
+
+                </ul>
+                <form class="navbar-form navbar-left" role="search" action="">
+                            <div class="input-group" style="width:410px">
+                                <input type="text" class="form-control" name="q"
+                                       placeholder="{% trans 'Search for Accessoires,Portables,Lignes, Reparations ...' %}">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>
+                      </button>
+                    </span>
+                            </div>
+                        </form>
+
+
+
+
+                        <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+
+
+
+
+                                <li><a href="{% url 'logout' %}">{% trans 'Déconexion' %}</a></li>
+                            </ul>
+                        </li>
+
+
+
+                    </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<br/>
+<br/>
+
+<main>
+    <div class="container">
+        {% block main %}
+        {% endblock main %}
+    </div>
+</main>
+{% endblock body %}
+</body>
+</html>

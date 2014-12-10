@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Lignes{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+<ol class="breadcrumb">
+        <li>{% trans 'Lignes' %}</li>
+        <li>{% trans 'Vendre' %}</li>
+        <li class="active">{{ ligne.type }}  </li>
+
+</ol>
+
+<br><br>
+
+<div class="row">
+    <div class="col-md-10 col-sm-offset-1 ">
+        <section >
+
+                <div class="table-responsive">
+                    <table id="informatique" class="table table-bordered  table-hover table-condensed " >
+                        <thead>
+                            <tr bgcolor="#ADA5A5">
+<th></th>
+                                <th>{% trans 'Ref' %}</th>
+                                <th>{% trans 'Forfait' %}</th>
+                                            {% if perms.reports %}
+    <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+                                <th>{% trans ' Prix de gros' %}</th>
+                                <th>{% trans ' Prix de vendre(Unite)' %}</th>
+                                <th>{% trans ' Quantité' %}</th>
+                                <th>{% trans 'Vende par' %}</th>
+                                <th>{% trans 'date' %}</th>
+                                <th>{% trans 'Note' %}</th>
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td>
+
+{% if  ligne.type = "Ooredoo" %}
+<img class="media-object" src="{{ STATIC_URL }}images/Ooredoo-Logo.png" width="150" height="30">
+
+{% elif ligne.type = "Orange"  %}
+
+<img class="media-object" src="{{ STATIC_URL }}images/orange.jpg" width="60" height="60">
+{% else %}
+<img class="media-object" src="{{ STATIC_URL }}images/download.jpg" width="80" height="60">
+
+{% endif %}
+                            </td>
+
+
+                                <td> {{ ligne.id }}</td>
+
+
+
+                                <td class="info"><a href="{% url 'ligne' ligne.ligne.id %}" > {{ ligne.item }}</td>
+                                 {% if perms.reports %}
+  <td class="danger"> {{ ligne.prix_de_gros }}TD</td>
+                 {% endif %}
+
+                                <td class="danger"> {{ ligne.prix_de_vendre }}TD</td>
+                                <td class="warning"> {{ ligne.quantite }}</td>
+                                <td class="info"> {{ ligne.user }}</td>
+                                <td> {{ ligne.date }}</td>
+                                <td class="warning"> {{ ligne.note|default:'none' }}</td>
+
+
+
+
+
+
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function () {
+            $('#informatique').DataTable(
+                    {
+
+        });
+    </script>
+
+    {% endblock main %}

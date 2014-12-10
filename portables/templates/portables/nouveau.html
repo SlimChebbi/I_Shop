@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Téléphones {% endblock %}
+{% block head %}
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+
+<ol class="breadcrumb">
+        <li>{% trans 'Téléphones Portables' %}</li>
+        <li class="active">{% trans 'Nouveaux  ' %}</li>
+
+
+
+    </ol>
+    <a href="{% url 'add_portable' 1 %}" class="btn btn-primary pull-right">
+        <span class="glyphicon glyphicon-plus"></span> {% trans 'Add' %}
+    </a>
+    <br><br>
+{% if nouveau %}
+<div class="row">
+    <div class="col-md-12  ">
+        <section class="vulns">
+
+            <div class="table-responsive">
+                <table class="table table-bordered  table-hover table-condensed " id="nouveau">
+                    <thead>
+                        <tr bgcolor="#ADA5A5">
+                            <th></th>
+                            <th>{% trans 'Ref' %}</th>
+                            <th>{% trans 'Marque' %}</th>
+                            <th>{% trans 'Model' %}</th>
+                                            {% if perms.reports %}
+    <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+                            <th>{% trans ' Prix de vendre' %}</th>
+                            <th>{% trans 'En Stock' %}</th>
+                            <th>{% trans 'Description' %}</th>
+                            <th></th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for portable in nouveau %}
+                        <tr>
+
+                        {% if  portable.image %}
+
+                        <td align="center"> <img src="{{ portable.image.url}}" class="client_project_logo" width="160" height="110"></td>
+
+                        {% else  %}
+                        <td align="center"> <img src="{{ STATIC_URL }}images/iphone.jpg" class="client_project_logo" width="160" height="110"></td>
+
+
+                        {% endif %}
+
+
+
+
+
+                            <td> <a href="{% url 'portable' portable.id %}" > {{ portable.id }}</a></td>
+                            <td class="info"> {{ portable.marque }}</td>
+                            <td> {{ portable.model }}</td>
+
+                                                      {% if perms.reports %}
+   <td class="danger"> {{ portable.prix_de_gros }}DT</td>
+                 {% endif %}
+                            <td class="danger"> {{ portable.prix }}DT</td>
+                            <td class="warning" > {{ portable.quantite }}</td>
+                            <td>{{ portable.description|default:'none' }}</td>
+
+                            <td>
+                                <a href="{% url 'edite_portable' portable.pk 1 %}"
+                                class="glyphicon glyphicon-edit"></a>
+                                <a href="{% url 'delete_portable' portable.pk 1 %}"
+                                class="glyphicon glyphicon-remove"></a>
+                            </td>
+
+                            {% if portable.quantite > 0 %}
+                            <td align="center">
+                            <a href="{% url 'vendre_portable'  1  portable.pk%}" class="btn btn-primary pull-right">
+                                    <span class="glyphicon glyphicon-shopping-cart"></span> {% trans 'vendre' %}
+                                </a>
+                                 </td>
+                                {% else %}
+                                <td class="danger">SoldeOut</td>
+
+
+                            {% endif %}
+
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#nouveau').DataTable(
+        {
+            "dom": 'T<"clear">lfrtip',
+            "tableTools": {
+                "sSwfPath": "/static/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+
+                "print",
+
+                ]
+            }
+        }
+        );
+    });
+</script>
+{% else %}
+<h4 class="no-data">{% trans 'There is no published portables yet' %}. <a
+    href="{% url 'add_portable' 1 %}">{% trans 'Be the first one to Add' %}!</a></h4>
+    {% endif %}
+    {% endblock main %}

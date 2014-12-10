@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Reparations{% endblock %}
+{% block main %}
+ <ol class="breadcrumb">
+        <li>{% trans 'Reparation' %}</li>
+        <li>{% trans 'Piece' %}</li>
+        <li class="active">{% trans 'Modifier ' %}</li>
+
+    </ol>
+<form "{% url 'edite_piece' piece_id %}" method="post">{% csrf_token %}
+{% for field in form.visible_fields %}
+    <div class="form-group{% if field.errors %} has-error{% endif %}">
+                <label for="{{ field.label }}" class="control-label">{{ field.label }}</label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <span class="help-block">{{ field.help_text }}</span>
+                {% endif %}
+                {% for error in field.errors %}
+                    <label class="control-label">{{ error }}</label>
+                {% endfor %}
+            </div>
+
+
+
+    {% endfor %}
+    <button type="submit" class="btn btn-primary publish">Modifier</button>
+</form>
+
+{% endblock main %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Téléphones {% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+<ol class="breadcrumb">
+        <li>{% trans 'Téléphones Portables' %}</li>
+        <li class="active">{{ portable.type }}  </li>
+
+</ol>
+
+<br><br>
+
+<div class="row">
+    <div class="col-md-10 col-sm-offset-1 ">
+        <section >
+
+                <div class="table-responsive">
+                    <table id="informatique" class="table table-bordered  table-hover table-condensed " >
+                        <thead>
+                            <tr bgcolor="#ADA5A5">
+                            <th></th>
+                                <th>{% trans 'Ref' %}</th>
+                                <th>{% trans 'Marque' %}</th>
+                                <th>{% trans 'Model' %}</th>
+                                                {% if perms.reports %}
+    <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+                                <th>{% trans ' Prix de vendre' %}</th>
+
+                                <th>{% trans ' En Stock' %}</th>
+                                <th>{% trans 'Description' %}</th>
+
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td align="center"> <img src="{{ portable.image.url}}" class="client_project_logo" width="160" height="110"></td>
+                                <td> {{ portable.id }}</td>
+                                <td class="info"> {{ portable.marque }}</td>
+                                <td class="info"> {{ portable.model }}</td>
+                                  {% if perms.reports %}
+    <td class="danger"> {{ portable.prix_de_gros }}TD</td>
+                 {% endif %}
+
+                                <td class="danger"> {{ portable.prix }}TD</td>
+                                <td class="warning"> {{ portable.quantite }}</td>
+                                <td> {{ portable.description|default:'none' }}</td>
+                                <td>
+                                    <a href="{% url 'edite_portable' portable.pk 1 %}"
+                                    class="glyphicon glyphicon-edit"></a><br>
+                                    <a href="{% url 'delete_portable' portable.pk 1 %}"
+                                    class="glyphicon glyphicon-remove"></a>
+                                </td>
+
+
+
+
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function () {
+            $('#informatique').DataTable(
+                    {
+
+        });
+    </script>
+
+    {% endblock main %}

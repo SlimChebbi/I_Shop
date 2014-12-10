@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} Téléphones {% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/projects.css" rel="stylesheet">
+<script src="{{ STATIC_URL }}js/projects.js"></script>
+{% endblock head %}
+{% block main %}
+
+
+<ol class="breadcrumb">
+    <li>{% trans 'Téléphones Portables' %}</li>
+    <li>{% trans port.type %}</li>
+    <li class="active">{% trans 'Vendre  ' %}</li>
+
+
+
+</ol>
+
+<div class="projects">
+    <div class="panel panel-default project clearfix">
+
+<div class="media">
+  <a class="pull-left" href="#">
+    {% if port.image %}
+ <img class="media-object" src="{{ port.image.url}}" width="80" height="80">
+
+ {% else  %}
+
+ <img src="{{ STATIC_URL }}images/iphone.jpg" width="80" height="80">
+
+
+ {% endif %}
+
+
+
+
+
+  </a>
+  <div class="media-body">
+    <h3 class="media-heading">{{ port.marque   }}-{{ port.model   }}</h3>
+    {% if  port.description %}
+    {{port.description}}
+  {% endif %}
+  </div>
+</div>
+
+
+        <br>
+        <div class="pull-right col-md-7">
+            <form "{% url 'vendre_portable' 1 port.pk %}" method="post">{% csrf_token %}
+                {% for field in form.visible_fields %}
+                <div class="form-group{% if field.errors %} has-error{% endif %}">
+                    <label for="{{ field.label }}" class="control-label">{{ field.label }}</label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                    <span class="help-block">{{ field.help_text }}</span>
+                    {% endif %}
+                    {% for error in field.errors %}
+                    <label class="control-label">{{ error }}</label>
+                    {% endfor %}
+                </div>
+
+                {% endfor %}
+                <button type="submit" class="btn btn-primary publish">{% trans 'Vendre' %}</button>
+            </form>
+
+        </div>
+<div class="col-md-4">
+    <ul class="list-group"  >
+                        {% if perms.reports %}
+   <li class="list-group-item list-group-item-danger"><h4>Prix de gros :{{port.prix_de_gros}}</h4></li>
+                 {% endif %}
+
+  <li class="list-group-item list-group-item-info"><h4>Prix de vendre :{{port.prix}}</h4></li>
+  <li class="list-group-item list-group-item-warning"><h4>Qauntité en Stock :{{port.quantite}}</h4></li>
+
+
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    </div>
+
+</div>
+{% endblock main %}

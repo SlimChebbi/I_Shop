@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} Reparations{% endblock %}
+{% load humanize %}
+
+{% block head %}
+<link href="{{ STATIC_URL }}css/projects.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/project_render.css" rel="stylesheet">
+<script src="{{ STATIC_URL }}js/projects.js"></script>
+<script src="{{ STATIC_URL }}js/statistics.js"></script>
+<script src="{{ STATIC_URL }}js/highcharts.js"></script>
+<script src="{{ STATIC_URL }}js/exporting.js"></script>
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{{ form.media }}
+{% endblock head %}
+{% block main %}
+<ol class="breadcrumb">
+    <li><a href="{% url 'encour' %}">{% trans 'Reparations' %}</a></li>
+    <li class="project">{% if reparation.status == 'E' %}
+                         {% trans 'En cours' %}
+
+                         {% elif reparation.status == 'P' %}
+                         {% trans 'Payée' %}
+                        {% else %}
+                         {% trans 'Termine' %}
+                        {% endif %}</li>
+</ol>
+<article>
+
+    <div class="title">
+
+        <h2>
+
+            {% trans 'Reparation_ ' %}{{ reparation.pk}}:{{ reparation.item }}
+        </h2>
+
+
+    </div>
+    {% if reparation.status == 'T'  or reparation.status == 'E' %}
+     <div class="pull-right">
+                        <a href="{% url 'edite_reparation' reparation.pk %}" class="btn btn-info options_button  ">
+                    <span class="glyphicon glyphicon-edit"></span> {% trans "Modifie" %}
+                </a>
+                <a href="{% url 'delete_reparation' reparation.pk %}" class="btn btn-danger options_button  ">
+                    <span class="glyphicon glyphicon-remove-circle"></span> {% trans "Supprime" %}
+                </a>
+                </div>
+                {% endif %}
+                <br>
+    <div class="project_description ">
+        <div class="panel panel-default">
+            <div class="panel-heading">{% trans 'Reparation Description' %}</div>
+            <div class="panel-body">
+                <span class="pull-right">
+                  <a href="">   <img src="{{ project.client.get_picture }}" style="widh:90px; height: 90px;"/></a>
+              </span>
+              {% if reparation.status == 'T'  or reparation.status == 'E' %}
+              <div class="pull-right " >
+
+
+                <br>
+
+                <a href="{% url 'change_status' reparation.pk %}" class="btn btn-primary options_button  ">
+                    <span class="glyphicon glyphicon-retweet"></span> {% trans "Change Status" %}
+                </a>
+
+                {% if reparation.status == 'T' %}
+                         <a href="{% url 'paye' reparation.pk %}" class="btn btn-primary options_button  ">
+                    <span class="glyphicon glyphicon-tasks"></span> {% trans "Paymment" %}</a>
+                </a>
+
+                        {% endif %}
+
+
+            </div>
+             {% endif %}
+
+            <ol>
+                <li>
+                    <h5> {% trans 'Client' %} :
+                        <a href=""> {{ reparation.client }} </a>
+                    </h5>
+                </li>
+
+                <li>
+                    <h5> {% trans 'Téléphone' %} :
+                        {{ reparation.telephone_client }}
+                    </h5>
+                </li>
+                <li>
+                    <h5>{% trans 'Description:' %} {{ reparation.description|default:'none'  }}</h5>
+                </li>
+                <li>
+                    <h5> {% trans 'Status' %} :
+                        {% if reparation.status == 'E' %}
+                        <span class="glyphicon glyphicon-wrench"></span> {% trans 'Reparation en cours' %}
+                        {% elif reparation.status == 'P' %}
+                        <span class="glyphicon glyphicon-ok"></span>  {% trans 'Payée' %}
+                        {% else %}
+                        <span class="glyphicon glyphicon-ok"></span>  {% trans 'Reparation termine' %}
+
+                        {% endif %}
+                    </h5>
+                </li>
+                <li><h5> {% trans 'Total' %} : {{total|default:'0.0'  }} DT</li>
+            </ol>
+        </div>
+    </div>
+</div>
+<div class="info">
+    <span>{% trans 'Ajoutée ' %}</span>
+    <span class="date">
+        <span class="glyphicon glyphicon-calendar"></span>
+        {{ reparation.date_debut }}
+    </span>
+    <span>{% trans 'par ' %}</span>
+    <span class="user">
+       <a href=""> {{ reparation.add_user }}</a>
+
+       </span>
+       <div class="pull-right" >
+        {% if reparation.status == 'T' or reparation.status == 'P' %}
+        <span>{% trans 'Terminée ' %}</span>
+    <span class="date">
+        <span class="glyphicon glyphicon-calendar"></span>
+        {{ reparation.date_debut }}
+    </span>
+    <span>{% trans 'par ' %}</span>
+    <span class="user">
+       <a href=""> {{ reparation.finish_user }}</a>
+
+       </span>
+           {% endif %}</div>
+       </div>
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          <h4 class="panel-title">{% trans 'Pieces' %}
+                            <span class="glyphicon pull-right glyphicon-chevron-up"></span></h4>
+        </a>
+
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse ">
+      <div class="panel-body">
+         <a href="{% url 'add_facture' reparation.pk %}" class="btn btn-primary pull-right  ">
+                        <span class="glyphicon glyphicon-plus"></span> {% trans "add" %}
+                    </a>
+                    {% if factures %}
+                    <div class="row">
+                        <div class="col-md-10 col-sm-offset-1  ">
+                            <section >
+                                <div class="table-responsive">
+                                    <table id="facture" class="table table-bordered  table-hover table-condensed " >
+                                        <thead>
+                                            <tr bgcolor="#ADA5A5">
+                                                <th>{% trans 'item' %}</th>
+                                                <th>{% trans 'Prix de gros' %}</th>
+                                                <th>{% trans 'prix' %}</th>
+                                                <th>{% trans 'Quantité' %}</th>
+                                                <th>{% trans 'Description' %}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for facture in factures %}
+                                            <tr>
+                                                <td class="info"> {{ facture.item }}</td>
+                                                <td class="danger"> {{ facture.prix_de_gros }}</td>
+                                                <td> {{ facture.prix }}</td>
+                                                <td class="warning"> {{ facture.quantite }}</td>
+                                                <td> {{ facture.description|default:'none'  }}</td>
+                                                <td>
+                                                    <a href="{% url 'edite_piece' facture.pk  %}"
+                                                    class="glyphicon glyphicon-edit"></a>
+                                                    <a href="{% url 'delete_piece' facture.pk %}"
+                                                    class="glyphicon glyphicon-remove"></a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                {% else %}
+                <h4 class="no-data">{% trans 'There is no published Facture yet' %}.
+                    {% endif %}
+      </div>
+    </div>
+    <script>
+                        $(document).ready(function () {
+                            $('#facture').DataTable(
+                            {
+                            }
+                            );
+                        });
+                    </script>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          <h4 class="panel-title">{% trans "Main d'ouvres" %}
+                            <span class="glyphicon pull-right glyphicon-chevron-up"></span></h4>
+        </a>
+
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        <a href="{% url 'add_mainouvre' reparation.pk %}" class="btn btn-primary pull-right  ">
+                            <span class="glyphicon glyphicon-plus"></span> {% trans "add" %}
+                        </a>
+                        {% if mainouvres %}
+                        <div class="row">
+                            <div class="col-md-8 col-sm-offset-2 ">
+                                <section >
+                                    <div class="table-responsive ">
+                                        <table id="mainouvre" class="table table-bordered  table-hover table-condensed " >
+                                            <thead>
+                                                <tr bgcolor="#ADA5A5">
+                                                    <th>{% trans 'prix' %}</th>
+                                                    <th>{% trans 'Description' %}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for mainouvre in mainouvres %}
+                                                <tr>
+                                                    <td class="info"> {{ mainouvre.prix }}</td>
+                                                    <td class="warning"> {{ mainouvre.description|default:'none'  }}</td>
+                                                    <td>
+                                                        <a href="{% url 'edite_main' mainouvre.pk %}"
+                                                        class="glyphicon glyphicon-edit"></a>
+                                                        <a href="{% url 'delete_main' mainouvre.pk %}"
+                                                        class="glyphicon glyphicon-remove"></a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+                            </div>
+
+                        {% else %}
+                        <h4 class="no-data">{% trans 'There is no published Facture yet' %}.
+                            {% endif %}
+      </div>
+    </div>
+    <script>
+                            $(document).ready(function () {
+                                $('#mainouvre').DataTable(
+                                {
+
+                                }
+                                );
+                            });
+                        </script>
+  </div>
+
+
+
+
+
+            {% endblock main %}

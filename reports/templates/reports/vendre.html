@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Reports{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+<ol class="breadcrumb">
+    <li>{% trans 'Reports' %}</li>
+</ol>
+<br><br>
+
+    <ul class="nav nav-tabs" style="margin-bottom: 1.4em">
+      <li{% if active == 'now' %} class="active"{% endif %}><a href="{% url 'now' %}">{% trans "Ajourd'huit" %}</a></li>
+      <li{% if active == 'semain' %} class="active"{% endif %}><a href="{% url 'semain' %}">{% trans "7 Derniér jours" %}</a></li>
+      <li{% if active == 'mois' %} class="active"{% endif %}><a href="{% url 'mois' %}">{% trans "Mois" %}</a></li>
+      <li{% if active == 'year' %} class="active"{% endif %}><a href="{% url 'year' %}">{% trans "Année" %}</a></li>
+      <li{% if active == 'all' %} class="active"{% endif %}><a href="{% url 'all' %}">{% trans "All" %}</a></li>
+
+    </ul>
+
+
+
+
+
+
+
+
+{% if vendes %}
+<div class="row">
+    <div class="col-md-12  ">
+        <section >
+
+
+
+            <div class="table-responsive">
+                <table id="informatique" class="table table-bordered  table-hover table-condensed " >
+                <thead>
+                        <tr bgcolor="#ADA5A5">
+
+                            <th>{% trans 'Total' %}</th>
+                            <th>{% trans 'Gain' %}</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                     <td class="info"><h4>{{total1}}DT</h4></td>
+                    <td class="danger"><h4>{{gain}}DT</h4></td>
+
+                    </tbody>
+                    <thead>
+                        <tr bgcolor="#ADA5A5">
+                            <th></th>
+                            <th>{% trans 'Ref' %}</th>
+                            <th>{% trans 'Produit' %}</th>
+                            <th>{% trans ' Prix de gros' %}</th>
+                            <th>{% trans ' Prix de vendre' %}</th>
+                            <th>{% trans 'Quantité' %}</th>
+                            <th>{% trans 'Note' %}</th>
+                            <th>{% trans 'Date' %}</th>
+                            <th>{% trans 'Vendu par' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for access in vendes %}
+                        <tr>
+{% if access.image %}
+                            <td align="center" > <img src="{{ access.image.url}}" class="client_project_logo" width="80" height="80"></td>
+{% else  %}
+        {% if access.type = 'Informatique'  or access.type = 'Portable' %}
+                {% if  access.type = 'Informatique' %}
+                <td align="center" >
+                <img src="{{ STATIC_URL }}images/access_inf.jpg" width="80" height="80"></td>
+                {% else  %}
+                <td align="center" >
+                <img src="{{ STATIC_URL }}images/acess_port.jpg" width="80" height="80"></td>
+                {% endif  %}
+        {% elif access.type = 'Nouveau'  or access.type = 'Occasion' %}
+        <td align="center" >
+                <img src="{{ STATIC_URL }}images/iphone.jpg" width="80" height="80"></td>
+        {% elif access.type = "R" %}
+        <td align="center" >
+                <img src="{{ STATIC_URL }}images/fix.png" width="80" height="80"></td>
+        {% else %}
+                {% if  access.type = "Ooredoo" %}
+                <td align="center" >
+                <img class="media-object" src="{{ STATIC_URL }}images/Ooredoo-Logo.png" width="150" height="30"></td>
+                {% elif access.type = "Orange"  %}
+                <td align="center" >
+                <img class="media-object" src="{{ STATIC_URL }}images/orange.jpg" width="60" height="60"></td>
+                {% else %}
+                <td align="center" >
+                <img class="media-object" src="{{ STATIC_URL }}images/download.jpg" width="80" height="60"></td>
+                {% endif %}
+        {% endif %}
+ {% endif %}
+
+
+
+
+                            <td> {{ access.id }}</td>
+                            {% if access.type = 'Informatique'  or access.type = 'Portable' %}
+                            <td class="info"><a href="{% url 'accessoire' access.acces.id %}" > {{ access.item }}</td>
+                            {% elif access.type = 'Nouveau'  or access.type = 'Occasion' %}
+                            <td class="info"><a href="{% url 'portable' access.port.id %}" > {{ access.item }}</td>
+
+
+                             {% elif access.type = "R" %}
+                             <td class="info"><a href="{% url 'reparation' access.reparation %}" > {{ access.item }}</a></td>
+
+
+                            {% else %}
+                            <td class="info"><a href="{% url 'ligne' access.ligne.id %}" > {{ access.item }}</a></td>
+                            {% endif %}
+
+
+                            <td class="danger"> {{ access.prix_de_gros }}TD</td>
+                            <td class="danger"> {{ access.prix_de_vendre }}TD</td>
+                            <td class="warning"> {{ access.quantite }}</td>
+                            <td> {{ access.note|default:'none' }}</td>
+                            <td class="warning"> {{ access.date }}</td>
+                            <td class="warning"> {{ access.user }}</td>
+                            <td>
+                                <a href="{% url 'delete_vendre' access.pk %}"
+                                    class="glyphicon glyphicon-remove"></a>
+                                    </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+</div>
+{% else %}
+<h4 class="no-data">{% trans 'Empty' %}.
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('#informatique').DataTable(
+            {
+                "dom": 'T<"clear">lfrtip',
+                "tableTools": {
+                    "sSwfPath": "/static/swf/copy_csv_xls_pdf.swf",
+                    "aButtons": [
+                    "print",
+                    ]
+                }
+            }
+            );
+        });
+    </script>
+
+    {% endblock main %}

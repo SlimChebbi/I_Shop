@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Acessoires{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+<ol class="breadcrumb">
+        <li>{% trans 'Accessoires' %}</li>
+        <li class="active">{{ access.type }}  </li>
+
+</ol>
+
+<br><br>
+
+<div class="row">
+    <div class="col-md-10 col-sm-offset-1 ">
+        <section >
+
+                <div class="table-responsive">
+                    <table id="informatique" class="table table-bordered  table-hover table-condensed " >
+                        <thead>
+                            <tr bgcolor="#ADA5A5">
+                            <th></th>
+                                <th>{% trans 'Ref' %}</th>
+                                <th>{% trans 'Produit' %}</th>
+                                 {% if perms.reports %}
+       <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+
+                                <th>{% trans ' Prix de vendre' %}</th>
+                                <th>{% trans ' En Stock' %}</th>
+                                <th>{% trans 'Description' %}</th>
+
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+
+<td>
+ {% if access.image %}
+ <img class="media-object" src="{{ access.image.url}}" width="80" height="80">
+
+ {% else  %}
+ {% if  access.type = 'Informatique' %}
+
+
+ <img src="{{ STATIC_URL }}images/access_inf.jpg" width="80" height="80">
+
+ {% else  %}
+<img src="{{ STATIC_URL }}images/acess_port.jpg" width="80" height="80">
+
+ {% endif %}
+ {% endif %}</td>
+                                <td> {{ access.id }}</td>
+                                <td class="info"> {{ access.produit }}</td>
+                                       {% if perms.reports %}
+      <td class="danger"> {{ access.prix_de_gros }}TD</td>
+                 {% endif %}
+
+                                <td class="danger"> {{ access.prix }}TD</td>
+                                <td class="warning"> {{ access.quantite }}</td>
+                                <td> {{ access.description|default:'none' }}</td>
+                                <td>
+                                    <a href="{% url 'edite_accessoire' access.pk 1 %}"
+                                    class="glyphicon glyphicon-edit"></a><br>
+                                    <a href="{% url 'delete_accessoire' access.pk 1 %}"
+                                    class="glyphicon glyphicon-remove"></a>
+                                </td>
+
+
+
+
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function () {
+            $('#informatique').DataTable(
+                    {
+
+        });
+    </script>
+
+    {% endblock main %}

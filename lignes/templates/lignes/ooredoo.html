@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %} Lignes{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/vulns.css" rel="stylesheet">
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery.dataTables.bootstrap.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/dataTables.tableTools.css">
+<!-- DataTables-->
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.bootstrap.js"></script>
+<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/dataTables.tableTools.js"></script>
+{% endblock head %}
+{% block main %}
+
+<ol class="breadcrumb">
+        <li>{% trans 'Lignes' %}</li>
+        <li class="active">{% trans 'Ooredoo  ' %}</li>
+
+
+
+    </ol>
+    <a href="{% url 'add_ligne' 1 %}" class="btn btn-primary pull-right">
+        <span class="glyphicon glyphicon-plus"></span> {% trans 'Add' %}
+    </a>
+    <br><br>
+
+{% if ooredoo %}
+<div class="row">
+   <div class="col-md-10 col-sm-offset-1 ">
+        <section class="vulns">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered  table-hover table-condensed " id="ooredoo">
+                        <thead>
+                            <tr bgcolor="#ADA5A5">
+                                <th></th>
+                                <th>{% trans 'Ref' %}</th>
+                                <th>{% trans 'Forfait' %}</th>
+                                                 {% if perms.reports %}
+    <th>{% trans ' Prix de gros' %}</th>
+                 {% endif %}
+                                <th>{% trans ' Prix de vendre' %}</th>
+                                <th>{% trans 'En Stock' %}</th>
+                                <th>{% trans 'Description' %}</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ligne in ooredoo %}
+                            <tr>
+                            <td align="center"> <img src="{{ STATIC_URL }}images/Ooredoo-Logo.png" class="client_project_logo" width="150" height="30"></td>
+                                 <td><a href="{% url 'ligne' ligne.id %}" >  {{ ligne.id }}</a></td>
+                                <td class="info"> {{ ligne.forfait }}</td>
+                                                      {% if perms.reports %}
+  <td class="danger"> {{ ligne.prix_de_gros }}DT</td>
+                 {% endif %}
+
+                                <td class="danger"> {{ ligne.prix }}DT</td>
+                                <td  class="warning" > {{ ligne.quantite }}</td>
+                                <td> {{ ligne.description|default:'none'  }}</td>
+                                <td>
+                                    <a href="{% url 'edite_ligne' ligne.pk 1 %}"
+                                    class="glyphicon glyphicon-edit"></a>
+                                    <a href="{% url 'delete_ligne' ligne.pk 1 %}"
+                                    class="glyphicon glyphicon-remove"></a>
+                                </td>
+                                {% if ligne.quantite > 0 %}
+                            <td align="center"><a href="{% url 'vendre_ligne' 1 ligne.id %}" class="btn btn-primary pull-right">
+        <span class="glyphicon glyphicon-shopping-cart"></span> {% trans 'vendre' %}
+    </a></td>
+                                {% else %}
+                                <td class="danger">SoldeOut</td>
+
+
+                            {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% else %}
+<h4 class="no-data">{% trans 'There is no published lignes yet' %}. <a
+    href="{% url 'add_ligne' 1 %}">{% trans 'Be the first one to Add' %}!</a></h4>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('#ooredoo').DataTable(
+                    {
+                        "dom": 'T<"clear">lfrtip',
+                        "tableTools": {
+                            "sSwfPath": "/static/swf/copy_csv_xls_pdf.swf",
+                            "aButtons": [
+
+                                "print",
+
+                            ]
+                        }
+                    }
+            );
+        });
+    </script>
+    {% endblock main %}

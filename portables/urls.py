@@ -1,0 +1,22 @@
+from django.conf.urls import patterns, include, url
+urlpatterns = patterns('portables.views',
+                       url(r'^occasion$', 'occasion',
+                           name='occasion'),
+                       url(r'^nouveau$', 'nouveau',
+                           name='nouveau'),
+                       url(r'^vendre_port/(?P<id>\d+)/$', 'vendre_port',
+                           name='vendre_port'),
+
+                       url(r'^portable/(?P<id>\d+)/$', 'portable',
+                           name='portable'),
+                       url(r'^add_portable/(?P<id>\d+)/$$', 'add_portable',
+                           name='add_portable'),
+                       url(r'^delete_portable/(?P<id>\d+)/(?P<type>\d+)/$',
+                           'delete_portable',
+                           name='delete_portable'),
+                       url(r'^edite_portable/(?P<id>\d+)/(?P<type>\d+)/$',
+                           'edite_portable',
+                           name='edite_portable'),
+                       url(r'^vendre_portable/(?P<type>\d+)/(?P<id>\d+)/$',
+                           'vendre_portable', name='vendre_portable'),
+                       )

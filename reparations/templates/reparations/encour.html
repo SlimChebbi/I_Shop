@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %} Reparations{% endblock %}
+{% block head %}
+<link href="{{ STATIC_URL }}css/projects.css" rel="stylesheet">
+<script src="{{ STATIC_URL }}js/projects.js"></script>
+{% endblock head %}
+{% block main %}
+<ol class="breadcrumb">
+    <li><a href="{% url 'encour' %}">{% trans 'Reparations' %}</a></li>
+    <li class="project">
+                         {% trans 'En cours' %}
+                       </li>
+
+
+</ol>
+
+{% if encour %}
+<div>
+<a href="{% url 'add_reparation' 1 %}" class="btn btn-primary ">
+        <span class="glyphicon glyphicon-plus"></span> {% trans 'Start new reparation' %}
+    </a>
+<form class="navbar-form navbar-right" role="search" action="">
+                            <div class="input-group" style="width:410px">
+                                <input type="text" class="form-control" name="q"
+                                       placeholder="{% trans 'Search for Reparations,Client ...' %}">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>
+                      </button>
+                    </span>
+                            </div>
+                        </form>
+                        </div>
+              <br><br>
+              {% endif %}
+<div class="projects">
+
+    {% if encour %}
+    {% for reparation in encour %}
+    {% include 'reparations/partial_reparation.html' with reparation=reparation %}
+    {% endfor %}
+
+    <div class="col-sm-offset-6">
+        <ul class="pagination">
+            <li>{% if encour.has_previous %}
+                <a href="?page={{ encour.previous_page_number }}">&laquo;</a>
+                {% endif %}
+            </li>
+            {% for i in encour.paginator.page_range %} {% ifequal i encour.number %}
+            <li class="active"><a href="?page={{ i }}">{{i}}</a>
+            </li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{i}}</a>
+            </li>
+            {% endifequal %} {% endfor %}
+            <li>{% if encour.has_next %}
+                <a href="?page={{ encour.next_page_number }}">&raquo;</a>
+                {% endif %}</li>
+        </ul>
+    </div>
+    {% else %}
+    <h4 class="no-data">{% trans 'There is no published Reparation yet' %}. <a
+        href="{% url 'add_reparation' 1 %}">{% trans 'Be the first one to Add' %}!</a></h4>
+        {% endif %}
+    </div>
+    {% endblock main %}
